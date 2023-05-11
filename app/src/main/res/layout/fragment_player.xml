@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".PlayerFragment"
+    android:orientation="vertical">
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:layout_width="match_parent"
+        android:layout_height="645dp"
+        app:resize_mode="fill"
+        android:id="@+id/exoPlay">
+
+    </com.google.android.exoplayer2.ui.StyledPlayerView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Lorem Ipsum"
+        android:textSize="56sp"
+        android:gravity="center"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
