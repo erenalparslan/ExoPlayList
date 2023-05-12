@@ -1,40 +1,91 @@
 package com.erenalparslan.exoplaylist
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.*
 import kotlinx.android.synthetic.main.fragment_player.*
 
 
-class PlayerFragment : Fragment() {
+class PlayerFragment : Fragment(), Player.Listener {
+
 
     lateinit var player: ExoPlayer
-    //lateinit var mediaItem :MediaItem
-    lateinit var mediaItems: List<MediaItem>
+    lateinit var playerNext: ExoPlayer
 
+    //lateinit var mediaItem :MediaItem
+    public lateinit var mediaItems: List<MediaItem>
+    private var nextIndex = 0
     private var currentWindow: Int = 0
     private var playbackPosition: Long = 0
+
+
+    inner class PlayerEventListener : Player.Listener {
+
+        override fun onPlaybackStateChanged(state: Int) {
+            super.onPlaybackStateChanged(state)
+
+            // Playback state değiştiğinde burada işlemler yapabilirsiniz
+            when (state) {
+                Player.STATE_READY -> {
+                    println("READY--->" + state)
+                }
+                // Diğer durumlar...
+            }
+
+
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            super.onPlayerError(error)
+            println("READY--->" + error)
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            super.onIsPlayingChanged(isPlaying)
+            println("isPlaying--->" + isPlaying)
+        }
+
+        override fun onSeekForwardIncrementChanged(seekForwardIncrementMs: Long) {
+            super.onSeekForwardIncrementChanged(seekForwardIncrementMs)
+            println("SEEK--->" + seekForwardIncrementMs.toInt())
+        }
+
+        override fun onEvents(player: Player, events: Player.Events) {
+            super.onEvents(player, events)
+            println("PLAYER--->" + player)
+            println("EVENTS--->" + events)
+        }
+
+        override fun onTracksChanged(tracks: Tracks) {
+            super.onTracksChanged(tracks)
+            println("TRACKS--->" + tracks.toString())
+            // TODO: this nextTrack increment
+            if (player.currentMediaItemIndex + 1 < mediaItems.size) {
+                playerSetterNext(playerNext, mediaItems.get(player.currentMediaItemIndex + 1))
+            }else if(player.currentMediaItemIndex + 1 == mediaItems.size){
+                playerSetterNext(playerNext, mediaItems.get(0))
+            }
+
+        }
+
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // mediaItem = MediaItem.fromUri(Uri.parse(URL))
         player = ExoPlayer.Builder(requireContext()).build()
+        playerNext = ExoPlayer.Builder(requireContext()).build()
         val playerEventListener = PlayerEventListener()
         player.addListener(playerEventListener)
+
         println("create Fragment")
 
         mediaItems = listOf(
@@ -49,7 +100,7 @@ class PlayerFragment : Fragment() {
             playbackPosition = savedInstanceState.getLong("playback_position")
         }
 
-        println(mediaItems[0].mediaMetadata)
+
     }
 
     override fun onCreateView(
@@ -68,65 +119,68 @@ class PlayerFragment : Fragment() {
         println("View create  Fragment")
 
         exoPlay.player = player
-
+        exoPlayNext?.player = playerNext
+        playerNext.volume=0f
+        nextIndex = player.currentMediaItemIndex + 1
         playerSetter(player, mediaItems)
+        playerSetterNext(playerNext, mediaItems.get(nextIndex))
 
 
     }
 
     override fun onPause() {
         super.onPause()
-        println("pause")
+        println(" Fragment pause")
     }
 
     override fun onResume() {
         super.onResume()
-        println("resume")
+        println("Fragment resume")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        println("destroy")
+        println("Fragment destroy")
         player.release()
     }
 
     override fun onStart() {
         super.onStart()
-        println("start")
+        println("Fragment start")
     }
 
     override fun onStop() {
         super.onStop()
-        println("stop")
+        println("Fragment stop")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        println("detach view")
+        println("Fragment detach view")
     }
 
     override fun onDetach() {
         super.onDetach()
-        println("detach")
+        println("Fragment detach")
 
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        println("attach")
+        println("Fragment attach")
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-    /*    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            exoPlay.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-        } else {
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            exoPlay.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        }*/
+        /*    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                exoPlay.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+            } else {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                exoPlay.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            }*/
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -136,6 +190,24 @@ class PlayerFragment : Fragment() {
         outState.putLong("playback_position", player.currentPosition)
     }
 
+/*    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        println(playbackState)
+        when (playbackState) {
+            Player.STATE_READY -> {
+                // Medya hazır olduğunda, bir sonraki medyanın var olup olmadığını kontrol et
+                val nextMediaItem = mediaItems.getOrNull(player.currentMediaItemIndex + 1)
+                println("bekliyor"+nextMediaItem?.mediaId)
+                if (nextMediaItem != null) {
+                    // Bir sonraki medya varsa, ön yükleme yap
+                    println("yüklendi"+nextMediaItem.mediaId)
+                    player.setMediaItem(nextMediaItem)
+                }
+            }
+            // Diğer durumlar...
+        }
+    }*/
+
 
     fun playerSetter(player: ExoPlayer, mediaItem: List<MediaItem>) {
         player.setMediaItems(mediaItem, currentWindow, playbackPosition)
@@ -143,10 +215,12 @@ class PlayerFragment : Fragment() {
         player.play()
     }
 
-    companion object {
-        const val URL =
-            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    fun playerSetterNext(player: ExoPlayer, mediaItem: MediaItem) {
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
     }
 
 
 }
+
