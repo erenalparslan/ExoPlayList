@@ -23,7 +23,13 @@ ExoPlayer is easily customizable and has a flexible structure. Customized versio
    <li>Lifecycle</li>
    <li>Storage permission</li>
    <li>ExoPlayer Event Listener</li>
- </ul>  
+ </ul> 
+ 
+ # Updates
+<ul>
+   <li>Next content preview</li>
+   <li>Caching</li>
+ </ul>
 
 # Screenshot
 
