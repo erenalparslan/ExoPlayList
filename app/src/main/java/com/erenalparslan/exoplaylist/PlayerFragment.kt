@@ -30,13 +30,18 @@ class PlayerFragment : Fragment(), Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
             super.onPlaybackStateChanged(state)
 
-            // Playback state değiştiğinde burada işlemler yapabilirsiniz
+     /*       // Playback state değiştiğinde burada işlemler yapabilirsiniz
             when (state) {
                 Player.STATE_READY -> {
-                    println("READY--->" + state)
+                    // Medya hazır olduğunda, bir sonraki medyanın var olup olmadığını kontrol et
+                    val nextMediaItem = mediaItems.getOrNull(player.currentMediaItemIndex + 1)
+                    if (nextMediaItem != null) {
+                        // Bir sonraki medya varsa, ön yükleme yap
+                        player.setMediaItem(nextMediaItem)
+                    }
                 }
                 // Diğer durumlar...
-            }
+            }*/
 
 
         }
@@ -190,23 +195,7 @@ class PlayerFragment : Fragment(), Player.Listener {
         outState.putLong("playback_position", player.currentPosition)
     }
 
-/*    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        println(playbackState)
-        when (playbackState) {
-            Player.STATE_READY -> {
-                // Medya hazır olduğunda, bir sonraki medyanın var olup olmadığını kontrol et
-                val nextMediaItem = mediaItems.getOrNull(player.currentMediaItemIndex + 1)
-                println("bekliyor"+nextMediaItem?.mediaId)
-                if (nextMediaItem != null) {
-                    // Bir sonraki medya varsa, ön yükleme yap
-                    println("yüklendi"+nextMediaItem.mediaId)
-                    player.setMediaItem(nextMediaItem)
-                }
-            }
-            // Diğer durumlar...
-        }
-    }*/
+
 
 
     fun playerSetter(player: ExoPlayer, mediaItem: List<MediaItem>) {
