@@ -37,7 +37,11 @@ ExoPlayer is easily customizable and has a flexible structure. Customized versio
 ![ezgif com-gif-maker (4)](https://github.com/erenalparslan/ExoPlayList/assets/100201401/755511d0-dc04-429a-abf0-a12ed4175ae2)
 ![2exo](https://github.com/erenalparslan/ExoPlayList/assets/100201401/8d079e2a-8c3c-4323-927f-72218dfc3dbb)
 <br/>
-![2exo1](https://github.com/erenalparslan/ExoPlayList/assets/100201401/25b373ed-3826-4832-9b13-1819d8e2b358)
+![2exo1](https://github.com/erenalparslan/ExoPlayList/assets/100201401/4c97ef3e-9b20-4754-80ba-820812f43147)
+
+
+
+
 
 
 
