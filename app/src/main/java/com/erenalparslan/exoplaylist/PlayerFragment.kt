@@ -19,10 +19,16 @@ class PlayerFragment : Fragment(), Player.Listener {
     lateinit var playerNext: ExoPlayer
 
     //lateinit var mediaItem :MediaItem
-    public lateinit var mediaItems: List<MediaItem>
+     var mediaItems = listOf(
+        MediaItem.fromUri(Uri.parse("file:///storage/emulated/0/Download/car.mp4")),
+        MediaItem.fromUri(Uri.parse("file:///storage/emulated/0/Download/cartoon.mp4")),
+        MediaItem.fromUri(Uri.parse("file:///storage/emulated/0/Download/vlog.mp4"))
+    )
     private var nextIndex = 0
     private var currentWindow: Int = 0
     private var playbackPosition: Long = 0
+    private var isTransitionInProgress = false
+
 
 
     inner class PlayerEventListener : Player.Listener {
@@ -30,20 +36,29 @@ class PlayerFragment : Fragment(), Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
             super.onPlaybackStateChanged(state)
 
-     /*       // Playback state değiştiğinde burada işlemler yapabilirsiniz
+  /*          println("Change--->" + state)
+            // Playback state değiştiğinde burada işlemler yapabilirsiniz
             when (state) {
                 Player.STATE_READY -> {
-                    // Medya hazır olduğunda, bir sonraki medyanın var olup olmadığını kontrol et
-                    val nextMediaItem = mediaItems.getOrNull(player.currentMediaItemIndex + 1)
-                    if (nextMediaItem != null) {
-                        // Bir sonraki medya varsa, ön yükleme yap
-                        player.setMediaItem(nextMediaItem)
+                    if (!isTransitionInProgress) {
+                        // Medya hazır olduğunda, bir sonraki medyanın var olup olmadığını kontrol et
+                        val nextMediaItemIndex = player.currentWindowIndex + 1
+                        if (nextMediaItemIndex < mediaItems.size) {
+                            // Bir sonraki medya varsa, ön yükleme yap
+                            val nextMediaItem = mediaItems[nextMediaItemIndex]
+                            isTransitionInProgress = true
+                            player.setMediaItem(nextMediaItem)
+                            player.seekTo(nextMediaItemIndex, C.TIME_UNSET)
+                            player.prepare()
+                        }
                     }
+                }
+                Player.STATE_ENDED -> {
+                    // Geçiş tamamlandığında, geçiş işlemini işaretleyin
+                    isTransitionInProgress = false
                 }
                 // Diğer durumlar...
             }*/
-
-
         }
 
         override fun onPlayerError(error: PlaybackException) {
@@ -93,17 +108,14 @@ class PlayerFragment : Fragment(), Player.Listener {
 
         println("create Fragment")
 
-        mediaItems = listOf(
-            MediaItem.fromUri(Uri.parse("file:///storage/emulated/0/Download/car.mp4")),
-            MediaItem.fromUri(Uri.parse("file:///storage/emulated/0/Download/cartoon.mp4")),
-            MediaItem.fromUri(Uri.parse("file:///storage/emulated/0/Download/vlog.mp4"))
-        )
 
         // Player state'i kaydet
         if (savedInstanceState != null) {
             currentWindow = savedInstanceState.getInt("current_window")
             playbackPosition = savedInstanceState.getLong("playback_position")
         }
+
+
 
 
     }
