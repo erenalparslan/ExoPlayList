@@ -74,7 +74,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
 
-    androidTestImplementation 'androidx.fragment:fragment-testing:1.4.0'
+
+    debugImplementation 'androidx.test:core-ktx:1.5.0'
+    debugImplementation 'androidx.fragment:fragment-testing:1.5.7'
 
 /*    //Instrumental Tests dependencies
     androidTestImplementation "com.google.truth:truth:1.1.3"
